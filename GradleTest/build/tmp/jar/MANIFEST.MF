@@ -1,0 +1,4 @@
+Manifest-Version: 1.0
+Class-Path: commons-lang3-3.0.jar log4j-1.2.16.jar
+Main-Class: com.concretepage.Test
+

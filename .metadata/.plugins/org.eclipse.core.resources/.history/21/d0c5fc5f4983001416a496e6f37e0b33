@@ -1,0 +1,12 @@
+package com.yin.rest;
+
+public class ClusterSummaryResp {
+	 public String stormVersion;
+	 public int nimbusUptime;
+	 public String supervisors;
+	 public String slotsTotal;
+	 public String slotsUsed;
+	 public String slotsFree;
+	 public String executorsTotal;
+	 public String tasksTotal;
+}

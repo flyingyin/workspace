@@ -1,0 +1,98 @@
+package com.yin.rest;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
+
+import javax.annotation.Generated;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
+import org.apache.storm.guava.io.Files;
+import org.apache.thrift7.TException;
+import org.apache.thrift7.protocol.TBinaryProtocol;
+import org.apache.thrift7.protocol.TProtocol;
+import org.apache.thrift7.transport.TFramedTransport;
+import org.apache.thrift7.transport.TSocket;
+import org.apache.thrift7.transport.TTransport;
+
+import clojure.lang.RT;
+import backtype.storm.ui.*;
+import backtype.storm.utils.NimbusClient;
+import backtype.storm.generated.ClusterSummary;
+import backtype.storm.generated.DistributedRPC.Client;
+import backtype.storm.generated.Nimbus;
+import backtype.storm.generated.SupervisorSummary;
+import backtype.storm.generated.TopologySummary;
+import backtype.storm.thrift__init;
+ 
+@Path("/hello")
+public class HelloWorldService {
+ 
+	@GET
+	@Path("/r/{param}")
+	public Response getMsg(@PathParam("param") String msg) {
+ 
+		String output = "Jersey say : " + msg;
+ 
+		return Response.status(200).entity(output).build(); 
+	}
+	
+	
+	@GET 
+	@Produces(MediaType.APPLICATION_JSON)
+	@Path("/nimbus")
+	public ClusterSummaryResp storm() {
+		String host = "127.0.0.1";
+		int port = 6627;
+				
+		TSocket socket = new TSocket(host, port);
+		TTransport transport = new TFramedTransport(socket);
+		
+		TProtocol protocol = new TBinaryProtocol(transport);
+		
+		Nimbus.Client client = new Nimbus.Client(protocol);
+				
+		ClusterSummaryResp resp = new ClusterSummaryResp();
+		
+		try {
+			transport.open();
+			
+			ClusterSummary cluster = client.getClusterInfo();
+			
+			File releaseFile = new File(System.getProperty("storm.home") + "/RELEASE");			
+			resp.stormVersion = releaseFile.exists() ? Files.readFirstLine(releaseFile, Charset.defaultCharset()) : "Unknown";
+			resp.nimbusUptime = cluster.get_nimbus_uptime_secs();
+			
+			for(SupervisorSummary sup : cluster.get_supervisors())
+			{
+				resp.supervisors += 1;
+				resp.slotsTotal += sup.get_num_workers();
+				resp.slotsUsed += sup.get_num_used_workers();
+			}
+			resp.slotsFree = resp.slotsTotal - resp.slotsUsed;
+			
+			for(TopologySummary topology : cluster.get_topologies())
+			{
+				resp.executorsTotal += topology.get_num_executors();
+				resp.tasksTotal += topology.get_num_tasks();
+			}				
+			
+			transport.close();
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+				
+		return resp;
+	}
+	
+}

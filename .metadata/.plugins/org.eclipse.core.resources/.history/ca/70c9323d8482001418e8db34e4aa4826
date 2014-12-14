@@ -1,0 +1,58 @@
+package com.yin.rest;
+
+import javax.annotation.Generated;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.apache.thrift7.TException;
+import org.apache.thrift7.protocol.TBinaryProtocol;
+import org.apache.thrift7.protocol.TProtocol;
+import org.apache.thrift7.transport.TFramedTransport;
+import org.apache.thrift7.transport.TSocket;
+import org.apache.thrift7.transport.TTransport;
+
+import backtype.storm.ui.*;
+import backtype.storm.utils.NimbusClient;
+import backtype.storm.generated.DistributedRPC.Client;
+import backtype.storm.generated.Nimbus;
+ 
+@Path("/hello")
+public class HelloWorldService {
+ 
+	@GET
+	@Path("/r/{param}")
+	public Response getMsg(@PathParam("param") String msg) {
+ 
+		String output = "Jersey say : " + msg;
+ 
+		return Response.status(200).entity(output).build(); 
+	}
+	
+	@GET	
+	@Path("/nimbus")
+	public String storm() {
+		String host = "localhost";
+		int port = 6627;
+		TSocket socket = new TSocket(host, port);
+		TTransport transport = new TFramedTransport(socket);
+		
+		TProtocol protocol = new TBinaryProtocol(transport);
+		
+		Nimbus.Client client = new Nimbus.Client(protocol);
+		int nimbusUptime = 0;
+		try {
+			nimbusUptime = client.getClusterInfo().get_nimbus_uptime_secs();
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return e.toString();
+		}
+		
+		transport.close();
+		return "Nimbus Host: " + nimbusUptime;
+	}
+ 
+}

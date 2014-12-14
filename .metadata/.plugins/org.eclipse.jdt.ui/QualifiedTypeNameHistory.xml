@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="backtype.storm.utils.NimbusClient"/>
+<fullyQualifiedTypeName name="javax.annotation.Generated"/>
+<fullyQualifiedTypeName name="backtype.storm.generated.Nimbus"/>
+<fullyQualifiedTypeName name="backtype.storm.generated.DistributedRPC.Client"/>
+<fullyQualifiedTypeName name="backtype.storm.generated.DistributedRPC.Client.Factory"/>
+<fullyQualifiedTypeName name="org.apache.thrift7.transport.TTransport"/>
+<fullyQualifiedTypeName name="org.apache.thrift7.transport.TFramedTransport"/>
+<fullyQualifiedTypeName name="org.apache.thrift7.transport.TSocket"/>
+<fullyQualifiedTypeName name="org.apache.thrift7.protocol.TProtocol"/>
+<fullyQualifiedTypeName name="org.apache.thrift7.protocol.TBinaryProtocol"/>
+<fullyQualifiedTypeName name="backtype.storm.thrift.add_inputs"/>
+<fullyQualifiedTypeName name="backtype.storm.thrift__init"/>
+<fullyQualifiedTypeName name="backtype.storm.daemon.builtin_metrics.fn__2864.__GT_BuiltinBoltMetrics__2894"/>
+<fullyQualifiedTypeName name="backtype.storm.ui.core.with_nimbus"/>
+<fullyQualifiedTypeName name="backtype.storm.ui.core.cluster_summary_table"/>
+<fullyQualifiedTypeName name="backtype.storm.generated.ClusterSummary"/>
+<fullyQualifiedTypeName name="clojure.lang.RT"/>
+<fullyQualifiedTypeName name="backtype.storm.ui.core.aggregate_spout_stats"/>
+</qualifiedTypeNameHistroy>

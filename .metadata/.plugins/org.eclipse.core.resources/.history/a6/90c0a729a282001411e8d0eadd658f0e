@@ -1,0 +1,70 @@
+package com.yin.rest;
+
+import javax.annotation.Generated;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.apache.thrift7.TException;
+import org.apache.thrift7.protocol.TBinaryProtocol;
+import org.apache.thrift7.protocol.TProtocol;
+import org.apache.thrift7.transport.TFramedTransport;
+import org.apache.thrift7.transport.TSocket;
+import org.apache.thrift7.transport.TTransport;
+
+import clojure.lang.RT;
+import backtype.storm.ui.*;
+import backtype.storm.utils.NimbusClient;
+import backtype.storm.generated.ClusterSummary;
+import backtype.storm.generated.DistributedRPC.Client;
+import backtype.storm.generated.Nimbus;
+import backtype.storm.thrift__init;
+ 
+@Path("/hello")
+public class HelloWorldService {
+ 
+	@GET
+	@Path("/r/{param}")
+	public Response getMsg(@PathParam("param") String msg) {
+ 
+		String output = "Jersey say : " + msg;
+ 
+		return Response.status(200).entity(output).build(); 
+	}
+	
+	@GET	
+	@Path("/nimbus")
+	public String storm() {
+		String host = "127.0.0.1";
+		int port = 6627;
+		
+		backtype.storm.ui.core core = new backtype.storm.ui.core();
+		RT.loadResourceScript("interop/core.clj");
+		
+		TSocket socket = new TSocket(host, port);
+		TTransport transport = new TFramedTransport(socket);
+		
+		TProtocol protocol = new TBinaryProtocol(transport);
+		
+		Nimbus.Client client = new Nimbus.Client(protocol);
+				
+		int nimbusUptime = 0;
+		try {
+			transport.open();
+			
+			ClusterSummary clusterSummay = new ClusterSummary();
+			
+			nimbusUptime = client.getClusterInfo().get_nimbus_uptime_secs();
+			transport.close();
+		} catch (TException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return e.toString();
+		}
+				
+		return "Nimbus Host: " + nimbusUptime;
+	}
+ 
+}

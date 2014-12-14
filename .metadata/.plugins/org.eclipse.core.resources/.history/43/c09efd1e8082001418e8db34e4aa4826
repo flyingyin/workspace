@@ -1,0 +1,45 @@
+package com.yin.rest;
+
+import javax.annotation.Generated;
+import javax.ws.rs.GET;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Response;
+
+import org.apache.thrift7.protocol.TProtocol;
+import org.apache.thrift7.transport.TFramedTransport;
+import org.apache.thrift7.transport.TSocket;
+import org.apache.thrift7.transport.TTransport;
+
+import backtype.storm.ui.*;
+import backtype.storm.utils.NimbusClient;
+import backtype.storm.generated.DistributedRPC.Client;
+import backtype.storm.generated.Nimbus;
+ 
+@Path("/hello")
+public class HelloWorldService {
+ 
+	@GET
+	@Path("/r/{param}")
+	public Response getMsg(@PathParam("param") String msg) {
+ 
+		String output = "Jersey say : " + msg;
+ 
+		return Response.status(200).entity(output).build(); 
+	}
+	
+	@GET	
+	@Path("/nimbus")
+	public String storm() {
+		String host;
+		int port;
+		TSocket socket = new TSocket(host, port);
+		TTransport transport = new TFramedTransport(socket);
+		TProtocol protocol = new TProtocol(transport);
+		
+		Nimbus.Client client = new Nimbus.Client()
+		return "Nimbus Host: " + backtype.storm.Config.NIMBUS_HOST;
+	}
+ 
+}
